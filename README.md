@@ -1,5 +1,10 @@
-# Spheres-DXR
-Renders a single frame of globally illuminated spheres made of lambertian material, using the DirectX 12 Ray Tracing API and an Nvidia RTX GPU.
+# Summary
+Renders a single frame of globally illuminated spheres made of lambertian material, using the DirectX 12 Ray Tracing API and an Nvidia RTX GPU. Inspired by Peter Shirley's "Ray Tracing in One Weekend". Uses 1 ray per pixel and the scene data can be modified by changing the values contained within Main.cpp.
+
+In terms of DirectX 12, it makes use of a pipeline state with a global root signature, a ray generation shader, a Lambertian material hit group and miss shader, and writes the output into a 2D texture bound via unordered access. This output is presented to a Win32 window using a Vsync-enabled swap chain.
+
+Requires a GPU with DXR support as I have not implemented the fallback layer.
+
 
 # Sample Output
 ![Lambertian 01](https://github.com/RealTimeChris/Spheres-DXR/blob/master/Sample%20Output/Lambertian%2001.png?raw=true)
