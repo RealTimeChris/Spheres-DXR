@@ -1,7 +1,9 @@
 # Summary
-Renders a single frame of globally illuminated spheres made of lambertian material, using the DirectX 12 Ray Tracing API and an Nvidia RTX GPU. Inspired by Peter Shirley's "Ray Tracing in One Weekend". Uses 1 ray per pixel and the scene data can be modified by changing the values contained within Main.cpp.
+Renders a single frame of globally illuminated spheres made of lambertian material, using the DirectX 12 Ray Tracing API and an Nvidia RTX GPU. Inspired by Peter Shirley's "Ray Tracing in One Weekend".
 
-In terms of DirectX 12, it makes use of a pipeline state with a global root signature, a ray generation shader, a Lambertian material hit group and miss shader, and writes the output into a 2D texture bound via unordered access. This output is presented to a Win32 window using a Vsync-enabled swap chain.
+Uses 1 ray per pixel and the scene data can be modified by changing the values contained within Main.cpp.
+
+In terms of DirectX 12, it makes use of a pipeline state with a global root signature, a ray generation shader, a Lambertian material hit group and miss shader, and writes the output into a 2D texture bound via unordered access. This output is presented to a Win32 window using a Vsync-enabled swap chain. The per-frame scene data is accessed in the shaders as a structure that is passed as global inline root constants.
 
 Requires a GPU with DXR support as I have not implemented the fallback layer.
 
