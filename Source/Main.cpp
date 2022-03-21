@@ -1206,84 +1206,58 @@ int WINAPI WinMain(
 		nullptr
 	);
 
-	// Prepare the resource state for shader access.
-	InitializationCommandList.GetInterface()->ResourceBarrier
-	(
-		1,
-		&(CreateResourceTransitionBarrier
-		(
-			IntersectionMap2DTexture.GetInterface(),
-			0,
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-		)
-			)
+	auto barrier0 = CreateResourceTransitionBarrier(
+		IntersectionMap2DTexture.GetInterface(),
+		0,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
+	InitializationCommandList.GetInterface()->ResourceBarrier(1, &barrier0);
 
-	// Copy the random numbers from shared memory to dedicated GPU memory and update the resource state for shader access.
 	InitializationCommandList.GetInterface()->CopyResource(
 		RandomNumberBuffer.GetInterface(),
 		RandomNumberUploadBuffer.GetInterface()
 	);
 
-	InitializationCommandList.GetInterface()->ResourceBarrier(
-		1,
-		&(CreateResourceTransitionBarrier(
-			RandomNumberBuffer.GetInterface(),
-			0,
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-		)
-			)
+	auto barrier1 = CreateResourceTransitionBarrier(
+		RandomNumberBuffer.GetInterface(),
+		0,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
+	InitializationCommandList.GetInterface()->ResourceBarrier(1, &barrier1);
 
-	// Copy the AABB data from shared to dedicated GPU memory and update its resource state for building the BLAS.
-	InitializationCommandList.GetInterface()->CopyResource
-	(
+	InitializationCommandList.GetInterface()->CopyResource(
 		AABBPipelineResource.GetInterface(),
 		AABBUploadResource.GetInterface()
 	);
 
-	InitializationCommandList.GetInterface()->ResourceBarrier
-	(
-		1,
-		&(CreateResourceTransitionBarrier
-		(
-			AABBPipelineResource.GetInterface(),
-			0,
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
-		)
-			)
+	auto barrier2 = CreateResourceTransitionBarrier(
+		AABBPipelineResource.GetInterface(),
+		0,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
 	);
+	InitializationCommandList.GetInterface()->ResourceBarrier(1, &barrier2);
 
-	// Build the bottom level acceleration structure(s).
-	InitializationCommandList.GetInterface()->BuildRaytracingAccelerationStructure
-	(
+	InitializationCommandList.GetInterface()->BuildRaytracingAccelerationStructure(
 		&BLASDescription,
 		0,
 		nullptr
 	);
 
-	// Build the top level acceleration structure.
-	InitializationCommandList.GetInterface()->CopyResource
-	(
+	InitializationCommandList.GetInterface()->CopyResource(
 		InstanceDescPipelineResource.GetInterface(),
 		InstanceDescUploadResource.GetInterface()
 	);
 
-	InitializationCommandList.GetInterface()->ResourceBarrier
-	(
-		1,
-		&(CreateResourceTransitionBarrier
-		(
-			InstanceDescPipelineResource.GetInterface(),
-			0,
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
-		)
-			)
+	auto barrier3 = CreateResourceTransitionBarrier(
+		InstanceDescPipelineResource.GetInterface(),
+		0,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
 	);
+	InitializationCommandList.GetInterface()->ResourceBarrier(1, &barrier3);
 
 	InitializationCommandList.GetInterface()->BuildRaytracingAccelerationStructure
 	(
@@ -1352,17 +1326,13 @@ int WINAPI WinMain(
 		&UAVBarrier
 	);
 
-	InitializationCommandList.GetInterface()->ResourceBarrier
-	(
-		1,
-		&CreateResourceTransitionBarrier
-		(
-			IntersectionMap2DTexture.GetInterface(),
-			0,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_COPY_SOURCE
-		)
+	auto barrier = CreateResourceTransitionBarrier(
+		IntersectionMap2DTexture.GetInterface(),
+		0,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_COPY_SOURCE
 	);
+	InitializationCommandList.GetInterface()->ResourceBarrier(1, &barrier);
 
 	// Close and submit the list of commands, and wait for completion.
 	InitializationCommandList.GetInterface()->Close();
@@ -1462,35 +1432,26 @@ int WINAPI WinMain(
 	FrameCommandList00.InitConfig.node_mask = 0;
 	FrameCommandList00.Initialize();
 
-	FrameCommandList00.GetInterface()->ResourceBarrier
-	(
-		1,
-		&CreateResourceTransitionBarrier
-		(
-			BackBuffer00,
-			0,
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COPY_DEST
-		)
+	auto barrierF00a = CreateResourceTransitionBarrier(
+		BackBuffer00,
+		0,
+		D3D12_RESOURCE_STATE_COMMON,
+		D3D12_RESOURCE_STATE_COPY_DEST
 	);
+	FrameCommandList00.GetInterface()->ResourceBarrier(1, &barrierF00a);
 
-	FrameCommandList00.GetInterface()->CopyResource
-	(
+	FrameCommandList00.GetInterface()->CopyResource(
 		BackBuffer00,
 		IntersectionMap2DTexture.GetInterface()
 	);
 
-	FrameCommandList00.GetInterface()->ResourceBarrier
-	(
-		1,
-		&CreateResourceTransitionBarrier
-		(
-			BackBuffer00,
-			0,
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_PRESENT
-		)
+	auto barrierF00b = CreateResourceTransitionBarrier(
+		BackBuffer00,
+		0,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_PRESENT
 	);
+	FrameCommandList00.GetInterface()->ResourceBarrier(1, &barrierF00b);
 
 	FrameCommandList00.GetInterface()->Close();
 
@@ -1505,36 +1466,26 @@ int WINAPI WinMain(
 	FrameCommandList01.InitConfig.node_mask = 0;
 	FrameCommandList01.Initialize();
 
-	FrameCommandList01.GetInterface()->ResourceBarrier
-	(
-		1,
-		&CreateResourceTransitionBarrier
-		(
-			BackBuffer01,
-			0,
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COPY_DEST
-		)
+	auto barrierF01a = CreateResourceTransitionBarrier(
+		BackBuffer01,
+		0,
+		D3D12_RESOURCE_STATE_COMMON,
+		D3D12_RESOURCE_STATE_COPY_DEST
 	);
+	FrameCommandList01.GetInterface()->ResourceBarrier(1, &barrierF01a);
 
-	FrameCommandList01.GetInterface()->CopyResource
-	(
+	FrameCommandList01.GetInterface()->CopyResource(
 		BackBuffer01,
 		IntersectionMap2DTexture.GetInterface()
 	);
 
-	FrameCommandList01.GetInterface()->ResourceBarrier
-	(
-		1,
-		&CreateResourceTransitionBarrier
-		(
-			BackBuffer01,
-			0,
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_PRESENT
-		)
+	auto barrierF01b = CreateResourceTransitionBarrier(
+		BackBuffer01,
+		0,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_PRESENT
 	);
-
+	FrameCommandList01.GetInterface()->ResourceBarrier(1, &barrierF01b);
 	FrameCommandList01.GetInterface()->Close();
 
 	FrameCommandLists[1] = FrameCommandList01.GetInterface();
